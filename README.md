@@ -1,38 +1,82 @@
-# #10 User defined functions
+# #11 Maps and Records
 
-Writing code is fun, as long as it doesn't get out of hand. To make sure our code stays put, and doesn't turn into spaghetti, we can group certain logic into functions.
+So far we've seen pretty basic data types, however LIGO offers a bit more in terms of built-in constructs, such as Maps and Records.
 
-# Defining a function
+### Maps
 
-Functions in LIGO are defined using the `function` keyword followed by their `name`, `parameters` and `return` type definitions.
+Maps are natively available in Michelson, and LIGO builds on top of them. A strong requirement for a Map is that it's keys need to be of the same type, and that type must be comparable.
 
-Here's how you define a basic function that accepts two `ints` and returns an `int` as well:
+Here's how a custom map type is defined:
 
 ```
-function add(const a: int; const b: int): int is 
-    block { skip } with a + b
+type ledger is map(address, tez);
 ```
 
-Function body consists of two parts:
+And here's how a map value is populated:
 
-- `block {<code>}` - logic of the function
-- `with <value>` - can be viewed as a return value of the function
+> Notice the `->` between the key an it's value and `;` to separate individual map entries
 
-> 💡 `skip` can be used as a placeholder for empty function blocks, when all the neccessary logic fits into `with` at the end.
+```
+const ledger: ledger = map
+    ("tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx": address) -> 1000mtz;
+    ("tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN": address) -> 2000mtz;
+end
+```
 
+> `("<string value>": address)` means that we type-cast a string into an address
 
-Now it's time to combine our knowledge from the previous chapters, we know that `vars` can be used within functions, the same applies for `pattern matching` and `if statements`. 
+#### Accessing map values by key
 
+If we want to access a balance from our ledger above, we can use the `[]` operator/accessor to read the associated `tez` value. However, the value we'll get will be wrapped as an optional, so in our case `option(tez)`, here's an example:
+
+```
+const balance: option(tez) = ledger[("tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN": address)];
+```
+
+### Records
+
+Records are a construct introduced in LIGO, and are not natively available in Michelson. The LIGO compiler translates records into Michelson `Pairs`.
+
+Here's how a custom record type is defined:
+
+```
+type user is record 
+    id: nat;
+    is_admin: bool;
+    name: string;
+end
+```
+
+And here's how a record value is populated:
+
+```
+const user: user = record
+    id = 1n;
+    is_admin = True;
+    name = "Alice";
+end
+```
+
+#### Accessing record keys by name
+
+If we want to obtain a value from a record for a given key, we can do the following:
+
+```
+const is_admin: bool = user.is_admin;
+```
 
 ---
 
 ## 🛠 Excercise
 
-### #1 Build a function, that returns an optional reward
+### #1 Building a simple ledger
 
-Build a function `check_reward(age: nat): option(reward)` where `reward is string`, that checks if the user is over `25 years old`. If the 'user' (age provided) is over `25n` then grant a reward, otherwise do not grant a reward. Try splitting up the logic into smaller functions.
+You should now be able to build a simple token ledger. The task is to build a ledger, that holds a map of `address -> ledger_entry_map` where `ledger_entry_map` is a `map(string, ledger_entry)` where the key in this map is a `token_id` representing a token name, e.g. `XTZ`. While `ledger_entry` itself is just a `nat` balance.
 
-> Solution can be found at the solutions folder, and ran using:
-> ```
-> ligo run-function exercises/\#1-build-a-function-that-returns-an-optional-reward/solution/reward.ligo check_reward '(27n)'
-> ```
+Second task is to implement a function `get_balance`, that returns a `nat` balance when given an `address` and a `token_id`.
+
+> Solution can be found in the solutions folder and ran with
+>```
+>ligo run-function -s pascaligo exercises/\#1-building-a-simple-ledger/solutions/ledger.ligo get_balance '(("tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN": address), "LIGO")'
+```
+
