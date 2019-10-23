@@ -1,53 +1,50 @@
-# #2 Contract lifecycle
+# #3 Setting up the LIGO environment
 
-Smart contracts on Tezos have a fairly straightforward lifecycle, even though it's not really a cycle, because they stay alive forever with the current protocol, so the cycle never ends.
+Painters need a brush and a canvas, while developers need a good IDE experience. In this chapter we'll setup & install the ligo compiler and other useful tools.
 
-## Implementing and compiling smart contract
+## Installing the compiler
 
-In case your smart contract is implemented in a high level language such as LIGO, you'll have to compile your smart contract first. Here's an example of how to compile a contract from chapter #1:
+At the moment, there are several ways of how you can install the LIGO compiler:
 
-```
-ligo compile-contract ligo-counter.ligo main
-// michelson output goes here
-```
+- **[With Docker](https://ligolang.org/docs/setup/installation/#dockerized-installation-recommended)**
+- **[As a debian package](https://ligolang.org/docs/setup/installation/#debian-linux-package-installation)**
+- **From sources directly**
 
-In any case, before you proceed to the deployment, you need to have a Michelson contract ready, either implemented directly, or compiled e.g. from LIGO.
-
-## Deployment (Origination) of a smart contract 
-
-If your contract is implemented in Michelson directly, or you have compiled your contract successfully, you need to deploy it. On Tezos, a deployment of a smart contract is called an origination. Here's an example of how a contract can be originated using the `tezos-client` CLI:
+Once you've installed LIGO, you can test out your installation as following:
 
 ```
-$ tezos-client originate contract counter for alice transferring 0 from alice running counter.tz --init '0'
+ligo --help
 ```
 
-The command above, will do the following:
-- Deploy a contract from a file `counter.tz`
-- Transfer `0 XTZ` to the deployed contract
-- Initialise the storage value of the deployed contract to `0`
+#### Release schedule
 
-Important thing to be wary of when deploying, are the costs associated with an origination operation, those will include:
+Important thing to notice is that LIGO is currently being released on a rolling release schedule, this means that you always get the latest development features. You can find our [rolling builds at the CI](https://gitlab.com/ligolang/ligo/pipelines).
 
-- `burns` - essentially a one-time payment to the network, for storing data on the chain. This includes storing the actual contract code, and the storage value as well.
-- `fees` - standard operation fees apply here too, those go to the bakers who process our operation.
+> ⚠️ Please note that the actual rolling releases of our Docker image and debian packages are made only from the `develop` branch.
 
-## Reading the storage of an originated contract
+## Setting up the IDE
 
-Once our contract is deployed, we should be able to read it's current storage. This can be done fairly easily using the `tezos-client`:
+Currently, LIGO offers support for [VSCode](https://code.visualstudio.com), including syntax highlighting and on-the-fly compilation error reporting. 
 
-```
-tezos-client get script storage for counter
-// Outputs: 0
-```
+Available extensions:
+- **[Syntax highlighting for PascaLIGO](https://marketplace.visualstudio.com/items?itemName=LigoLang.pascaligo-vscode)**
+- **[On-the-fly compilation error reporting](https://marketplace.visualstudio.com/items?itemName=Ligo.ligo-tools)**
 
-## Interaction with the originated contract
+![error reporting](img/error-reporting.png)
 
-Once the contract is deployed, it can be interacted with by sending a transfer operation to it's `KT1...` address. This transaction can specify the entrypoint being invoked - `%add`, `%sub`, ... And can carry an argument for the entrypoint as well, e.g. `%add` `5`. Here's a full example:
+---
 
-```
-tezos-client transfer 0 from alice to counter --entrypoint 'add' --arg '5'
-```
+## 🛠 Exercises
 
-In case the operation above is successfully included in the blockchain/network we're using, then the contract's storage would be updated from `0` to `5`.
+### #1 Testing out the compiler & IDE setup
 
-> 💡 You can always double check the latest storage of a contract with `get script storage for <alias>`
+In order to test if you have the LIGO compiler & the IDE set up correctly, you can try opening the *definitely not broken* `exercises/#1.../src/example.ligo` to see if it compiles. In case you get an error, you should be able to see a pop up on hover explaining you what's going on.
+
+#### Advanced
+
+If you're feeling lucky, try fixing the syntax error so the *red underline & a popup* go away.
+
+
+
+
+> 💡 You can find the fixed `example.ligo` in the `solutions` folder
