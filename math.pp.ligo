@@ -1,4 +1,4 @@
-# 1 "exercises/#1-variables-in-a-global-scope/solution/variable.ligo"
+# 1 "exercises/#1-chaining-mathematical-operations/solution/math.ligo"
 # 1 "<built-in>"
 # 1 "<command-line>"
 # 31 "<command-line>"
@@ -49,5 +49,5 @@
 
 
 # 32 "<command-line>" 2
-# 1 "exercises/#1-variables-in-a-global-scope/solution/variable.ligo"
-var age: int := 25;
+# 1 "exercises/#1-chaining-mathematical-operations/solution/math.ligo"
+const a: int = 100 / 10 * 3;

@@ -1,63 +1,86 @@
-# #5 Defining variables
+# #6 Working with numbers
 
-In the previous chapters we've learned that LIGO abstracts away the stack management of Michelson, so we can focus on building contracts in a more accessible way. The basic building block right after types, are constants and variables.
+### Available numerical types
 
-### Constants
+LIGO offers three built-in numerical types, and those are `int`, `nat` and `tez`.
 
-Constants are immutable by design, which means their values can't be reassigned.
-When defining a constant, you need to provide a `name`, `type` and a `value`:
+### Addition
 
+Addition in ligo is acomplished by using the `+` operator, however some type constraints apply, for example you can't add `tez + nat`.
+
+Here's an example of how two `ints` can be added together
 ```
-const age: int = 25;
-```
-
-You can evaluate the constant definition above using the LIGO compiler like this:
-
-```shell
-ligo evaluate-value -s pascaligo src/const.ligo age
-# Outputs: 25
+const a: int = 5 + 5;
 ```
 
-### Variables
+However bits of the following example wouldn't compile, because adding an `int` with a `nat` produces an `int`, not a `nat`, similiar rules apply for `tez`:
+```
+// correct
+const a: int = 5n + 10;
+// wrong
+const b: nat = 5n + 10;
 
-Variables, unlike constants are mutable, but can't be used in a *global scope*, however they can be used within functions, or function arguments.
+const c: tez = 5mtz - 1mtz;
+// mixing of tez with other types is also not possible
+const d: tez = 5mtz - 5n;
+```
 
-> Don't worry if you don't understand the function syntax yet, we'll get to it in the following chapters
+A pro tip is that you can also use underscores for readability when defining numbers like this:
 
 ```
-function add(const a: int, const b: int) : int is
-    block { 
-        var c : int := a + b;
-     } with c
+const a: int = 1_000_000;
 ```
 
-> ⚠️ Notice the different assignment operator `:=`
+> 💡 You can find more addition examples in `src/addition.ligo`
 
-You can evaluate the constant definition above using the LIGO compiler like this:
+### Substraction
 
-```shell
-ligo run-function -s pascaligo src/add.ligo add '(1,1)' 
-# Outputs: 2
+The simpliest substraction looks like this:
+
+> ⚠️ Even when substracting two `nats`, the result is an `int`
+
+```
+const a: int = 5 - 10;
+```
+
+And again, substracting `tez`:
+
+```
+const a: tez = 5mtz - 1mtz;
+```
+
+### Multiplication
+
+You can multiply values of the same type, such as:
+
+```
+const a: int = 5 * 5;
+const b: nat = 5n * 5n;
+// you can also multiply `nat` and `tez`
+const c: tez = 5n * 5mtz;
+```
+
+### Division
+
+In LIGO, you can divide `int`, `nat` and `tez`, here's how:
+
+> ⚠️ Division of two `tez` values results into a `nat`
+
+```
+const a: int = 10 / 3;
+const b: nat = 10n / 3n;
+const c: nat = 10mtz / 3mtz;
 ```
 
 ---
-
 ## 🛠 Exercises
 
-### #1 Variables in a global scope 
 
-In this chapter we've learned that variables (not constants) cannot be used at the top level scope, try to define a `var` at a top level scope, and use `evaluate-value` to trigger a parser error related to the top level variable definition.
+### #1 Chaining mathematical operations
 
-> Solution can be found at the solutions folder, and evaluated using:
-> ```
-> ligo evaluate-value -s pascaligo exercises/\#1-variables-in-a-global-scope/solution/variable.ligo age
-> ```
-
-### #2 Reassigning a variable value
-
-Variables can be mutated, unlike constants, so in order to test it out, try re-using the variable example from this chapter, but instead of passing two `consts` as a function argument, try using `var`, so you can mutate the variables in the function body, instead of creating a new variable `c` to sum them up.
+For the sake of exercise, try chaining multiplication and division, or other math combinations.
 
 > Solution can be found at the solutions folder, and evaluated using:
 > ```
-> ligo run-function -s pascaligo exercises/\#2-reassigning-a-variable-value/solution/reassign.ligo reassign '5'
+> ligo evaluate-value -s pascaligo exercises/\#1-chaining-mathematical-operations/solution/math.ligo a
 > ```
