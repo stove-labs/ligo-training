@@ -73,7 +73,7 @@ function is_hungry(const dinner: dinner): bool is block { skip }
 
 ### #1 Implement an access control function for an elevator
 
-Implement a `has_access(user, floor_id)` function, that accepts two parameters:
+Implement a `has_access(user, floor_id): bool` function, that accepts two parameters:
 
 - `user` - a variant of three possible values `Admin`, `Manager`, `Guest`
 - `floor_id` a `nat`, describing the floor the user is trying to access
