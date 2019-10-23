@@ -1,0 +1,1 @@
+var age: int := 25;

@@ -1,93 +1,63 @@
-# #4 Introduction to LIGO types
+# #5 Defining variables
 
-LIGO is strongly and statically typed, which means that the compiler checks your program at compilation time and makes sure there won't be any type related runtime errors. The language itself features types built on top of Michelson's type system.
+In the previous chapters we've learned that LIGO abstracts away the stack management of Michelson, so we can focus on building contracts in a more accessible way. The basic building block right after types, are constants and variables.
 
-### Available types
+### Constants
 
-Here's a non-exhaustive list of available LIGO types. For a complete* reference with more examples you can check out the [LIGO Cheat Sheet](https://ligolang.org/docs/language-basics/cheat-sheet/).
-
-**complete - work in progress*
-
--  Natural number
-    ```
-    nat
-    ```
--  Integer
-    ```
-    int
-    ```
--  String
-    ```
-    string
-    ```
--  Boolean
-    ```
-    bool
-    ```
--  Mutez (micro-tez)
-    ```
-    tez
-    ```
--  Account address (tz1.., KT1..)
-    ```
-    address
-    ```
--  Tuples
-    ```
-    (string * string)
-    ```
-- Variants carrying a value
-    ```
-    type action is 
-    | Increment of int 
-    | Decrement of int
-    ``` 
-    
-
-- Optional values / variant of Some(of_type)/None
-    ```
-    option(of_type)
-    ``` 
-    
-- Records
-    ```
-    type person is record
-        age: int ;
-    end
-    ```
-- Maps
-    ```
-    map(address, tez)
-    ```
-- Sets
-    ```
-    set(address)
-    ```
-
-### User defined types
-
-As you've seen in the list of example LIGO types above, some types require the developer to define what his program actually needs to use, such as records. This gives us the ability to compose types together like this:
+Constants are immutable by design, which means their values can't be reassigned.
+When defining a constant, you need to provide a `name`, `type` and a `value`:
 
 ```
-// Type aliasing
-type age is nat;
-type person is record
-    // Comes in handy if we want to be more expressive
-    age: age ;
-end
+const age: int = 25;
+```
+
+You can evaluate the constant definition above using the LIGO compiler like this:
+
+```shell
+ligo evaluate-value -s pascaligo src/const.ligo age
+# Outputs: 25
+```
+
+### Variables
+
+Variables, unlike constants are mutable, but can't be used in a *global scope*, however they can be used within functions, or function arguments.
+
+> Don't worry if you don't understand the function syntax yet, we'll get to it in the following chapters
+
+```
+function add(const a: int, const b: int) : int is
+    block { 
+        var c : int := a + b;
+     } with c
+```
+
+> ⚠️ Notice the different assignment operator `:=`
+
+You can evaluate the constant definition above using the LIGO compiler like this:
+
+```shell
+ligo run-function -s pascaligo src/add.ligo add '(1,1)' 
+# Outputs: 2
 ```
 
 ---
 
 ## 🛠 Exercises
 
-### #1 Defining a voting contract storage type
+### #1 Variables in a global scope 
 
-Best way to learn, is by practice, so let's try to define a new type called `voting_storage`,
-which will represent the storage of our contract. Let's pretend we're running a presidential election on the chain, our storage needs to be a `map` of candidates, where the map key is an `address` of a candidate, and the value associated in this map is a `record`, which holds two `nat`(ural numbers) representing the number of votes, where voters can vote for `yay` or `nay` for the respective candidate.
+In this chapter we've learned that variables (not constants) cannot be used at the top level scope, try to define a `var` at a top level scope, and use `evaluate-value` to trigger a parser error related to the top level variable definition.
 
-#### Advanced
+> Solution can be found at the solutions folder, and evaluated using:
+> ```
+> ligo evaluate-value -s pascaligo exercises/\#1-variables-in-a-global-scope/solution/variable.ligo age
+> ```
 
-To spice things up, try using a `tuple` instead of a record, where the first element represents a *yay* vote, and the second element a *nay* vote.
+### #2 Reassigning a variable value
 
-> 💡 Solution can be found in the solutions folder
+Variables can be mutated, unlike constants, so in order to test it out, try re-using the variable example from this chapter, but instead of passing two `consts` as a function argument, try using `var`, so you can mutate the variables in the function body, instead of creating a new variable `c` to sum them up.
+
+> Solution can be found at the solutions folder, and evaluated using:
+> ```
+> ligo run-function -s pascaligo exercises/\#2-reassigning-a-variable-value/solution/reassign.ligo reassign '5'
+> ```
