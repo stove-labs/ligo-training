@@ -1,86 +1,54 @@
-# #6 Working with numbers
+# #7 Working with strings
 
-### Available numerical types
-
-LIGO offers three built-in numerical types, and those are `int`, `nat` and `tez`.
-
-### Addition
-
-Addition in ligo is acomplished by using the `+` operator, however some type constraints apply, for example you can't add `tez + nat`.
-
-Here's an example of how two `ints` can be added together
-```
-const a: int = 5 + 5;
-```
-
-However bits of the following example wouldn't compile, because adding an `int` with a `nat` produces an `int`, not a `nat`, similiar rules apply for `tez`:
-```
-// correct
-const a: int = 5n + 10;
-// wrong
-const b: nat = 5n + 10;
-
-const c: tez = 5mtz - 1mtz;
-// mixing of tez with other types is also not possible
-const d: tez = 5mtz - 5n;
-```
-
-A pro tip is that you can also use underscores for readability when defining numbers like this:
+### Defining a string
 
 ```
-const a: int = 1_000_000;
+const a: string = "Hello Alice";
 ```
 
-> 💡 You can find more addition examples in `src/addition.ligo`
+### Concatenating strings
 
-### Substraction
-
-The simpliest substraction looks like this:
-
-> ⚠️ Even when substracting two `nats`, the result is an `int`
+Strings are concatenated using the `^` operator.
 
 ```
-const a: int = 5 - 10;
+const name: string = "Alice";
+const greeting: string = "Hello";
+// Hello Alice
+const full_greeting: string = greeting ^ " " ^ name;
 ```
 
-And again, substracting `tez`:
+### Slicing strings
 
+Strings can be sliced using the built-in function `string_slice(offset, length, string)`
+
+Here's how:
 ```
-const a: tez = 5mtz - 1mtz;
-```
-
-### Multiplication
-
-You can multiply values of the same type, such as:
-
-```
-const a: int = 5 * 5;
-const b: nat = 5n * 5n;
-// you can also multiply `nat` and `tez`
-const c: tez = 5n * 5mtz;
+const name: string = "Alice";
+// slice = "A"
+const slice: string = string_slice(0n, 1n, name);
 ```
 
-### Division
+> ⚠️ Notice that the `offset` and slice `length` are `nats`
 
-In LIGO, you can divide `int`, `nat` and `tez`, here's how:
+### Aquiring a length of a string
 
-> ⚠️ Division of two `tez` values results into a `nat`
+Length of a string can be found using the built-in function `size(string)`:
 
 ```
-const a: int = 10 / 3;
-const b: nat = 10n / 3n;
-const c: nat = 10mtz / 3mtz;
+const name: string = "Alice";
+// length = 5
+const length: nat = size(name);
 ```
 
 ---
-## 🛠 Exercises
 
+## 🛠 Exercise
 
-### #1 Chaining mathematical operations
+### Slice a word in half
 
-For the sake of exercise, try chaining multiplication and division, or other math combinations.
+Find a sentence/name/word with an even number of characters, and combine your prieviously learned LIGO math skills, with your newly learned string skills to split it in half.
 
 > Solution can be found at the solutions folder, and evaluated using:
 > ```
-> ligo evaluate-value -s pascaligo exercises/\#1-chaining-mathematical-operations/solution/math.ligo a
+> ligo evaluate-value -s pascaligo exercises/\#1-slice-a-word-in-half/solution/slice.ligo slice
 > ```
