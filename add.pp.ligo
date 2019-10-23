@@ -1,4 +1,4 @@
-# 1 "src/tez-comparison.ligo"
+# 1 "src/add.ligo"
 # 1 "<built-in>"
 # 1 "<command-line>"
 # 31 "<command-line>"
@@ -49,7 +49,6 @@
 
 
 # 32 "<command-line>" 2
-# 1 "src/tez-comparison.ligo"
-const a: tez = 5mtz;
-const b: tez = 10mtz;
-const c: bool = (a = b);
+# 1 "src/add.ligo"
+function add(const a: int; const b: int): int is 
+    block { skip } with a + b

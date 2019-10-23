@@ -1,86 +1,38 @@
-# #9 Optionals and pattern matching
+# #10 User defined functions
 
-Optionals are a programing pattern seen e.g. in OCaml, and since Michelson and LIGO are both inspired from OCaml, you'll have the *option* to use them with LIGO as well.
+Writing code is fun, as long as it doesn't get out of hand. To make sure our code stays put, and doesn't turn into spaghetti, we can group certain logic into functions.
 
-## Type unit
+# Defining a function
 
-Units in Michelson or LIGO represent *for the lack of better words* - an empty/useless/not needed value.
+Functions in LIGO are defined using the `function` keyword followed by their `name`, `parameters` and `return` type definitions.
 
-Here's how they're defined
-
-```
-const n: unit = Unit;
-```
-
-> 💡 Units will come in handy when we try pattern matching on custom variants below.
-
-## Variants
-
-Variant is a user-defined, or a built-in type (in case of optionals), that can be compared to e.g. an Enum (from javascript).
-
-Here's how to define a new variant type:
+Here's how you define a basic function that accepts two `ints` and returns an `int` as well:
 
 ```
-type id is nat
-type user is
-| Admin of id
-| Manager of id
-| Guest;
-
-const u: user = Admin(1000n);
-const g: user = Guest(Unit);
+function add(const a: int; const b: int): int is 
+    block { skip } with a + b
 ```
 
-This can be extremely useful when trying to build semantically appealing contracts. We'll learn how to use variants for 'logic purposes' shortly.
+Function body consists of two parts:
 
-### Optional values
+- `block {<code>}` - logic of the function
+- `with <value>` - can be viewed as a return value of the function
 
-Optionals are a type of a built-in variant, that can be used to determine if a variable holds a certain value or not. This is especially useful, e.g. your program's state allows for a certain variable value to be empty, like this:
+> 💡 `skip` can be used as a placeholder for empty function blocks, when all the neccessary logic fits into `with` at the end.
 
-```
-type dinner is option(string);
 
-// stay hungry
-const p1: dinner = None;
-// have some hamburgers
-const p2: dinner = Some("Hamburgers")
-```
-
-### Pattern matching
-
-Pattern matching is very similiar to e.g. `switch` in Javascript, and can be used to re-route the program's flow based on a value of a variant. 
-
-```
-type dinner is option(string);
-function is_hungry(const dinner: dinner): bool is block { skip } 
-    with (
-        case dinner of 
-            | None -> True
-            | Some(d) -> False
-        end
-    )
-```
-> You can run the example above with:
-> ```
-> ligo run-function -s pascaligo src/pattern-matching.ligo is_hungry 'Some("Hamburgers")'
-> // Outputs: false
-> ```
+Now it's time to combine our knowledge from the previous chapters, we know that `vars` can be used within functions, the same applies for `pattern matching` and `if statements`. 
 
 
 ---
 
-## 🛠 Exercise
+## 🛠 Excercise
 
-### #1 Implement an access control function for an elevator
+### #1 Build a function, that returns an optional reward
 
-Implement a `has_access(user, floor_id): bool` function, that accepts two parameters:
-
-- `user` - a variant of three possible values `Admin`, `Manager`, `Guest`
-- `floor_id` a `nat`, describing the floor the user is trying to access
-
-Admin should have access to any `floor_id`, `Manager` should be able to access all floors up to (including) floor `10`, and guest should only be able to access the first `3` floors.
+Build a function `check_reward(age: nat): option(reward)` where `reward is string`, that checks if the user is over `25 years old`. If the 'user' (age provided) is over `25n` then grant a reward, otherwise do not grant a reward. Try splitting up the logic into smaller functions.
 
 > Solution can be found at the solutions folder, and ran using:
 > ```
-> ligo run-function exercises/\#1-implement-an-access-control-function-for-an-elevator/solution/has_access.ligo has_access '(Manager(Unit), 15n)'
+> ligo run-function exercises/\#1-build-a-function-that-returns-an-optional-reward/solution/reward.ligo check_reward '(27n)'
 > ```
