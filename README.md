@@ -25,7 +25,7 @@ Variables, unlike constants are mutable, but can't be used in a *global scope*, 
 > Don't worry if you don't understand the function syntax yet, we'll get to it in the following chapters
 
 ```
-function add(const a: int, const b: int) : int is
+function add(const a: int; const b: int) : int is
     block { 
         var c : int := a + b;
      } with c
