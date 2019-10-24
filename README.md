@@ -152,7 +152,7 @@ Now we can use `(Right 5)` which is a Michelson value, to invoke our contract - 
 --- 
 ## Extras
 
-- [NFT implementation in LIGO](nft.stove-labs.com)
+- [NFT implementation in LIGO](https://nft.stove-labs.com)
 - [Timelocked multisig in LIGO](https://github.com/stove-labs/tutorials-ligo-timelocked-multisig)
 - [LIGO docs](https://ligolang.org)
 
